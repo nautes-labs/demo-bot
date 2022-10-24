@@ -3,4 +3,5 @@ RUN pip install kubernetes==v24.2.0
 RUN pip install nats-py
 RUN pip install asyncio-nats-streaming
 COPY nautes-listener.py /opt/
+COPY nautes-reporter.py /opt/
 WORKDIR /opt
