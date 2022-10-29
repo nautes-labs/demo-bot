@@ -23,6 +23,7 @@ parser.add_argument('-t', '--timeout', help='maximum time to wait in seconds', r
 parser.add_argument('-n', '--namespace', help='namespace containing eventbus', required=True)
 parser.add_argument('-e', '--eventbus', help='eventbus name', required=False)
 parser.add_argument('-k', '--kubeconfig', help='the path to kubeconfig', required=False)
+parser.add_argument('-r', '--resultpath', help='the path to task result', required=True)
 args = parser.parse_args()
 
 eventbus = args.eventbus
@@ -33,6 +34,7 @@ timeout = int(args.timeout)
 project_name = args.project
 app_name = args.application
 commit = args.commit
+result_path = args.resultpath
 step = 2
 exit_code = -1
 
@@ -65,7 +67,10 @@ async def main():
             phase = body['phase']
             sync_status = body['sync_status']
             healthy = body['healthy']
+            url = body['url']
             if phase == "Succeeded" and healthy == "Healthy":
+                with open(result_path, mode='w', encoding='utf-8') as result:
+                    result.write(url)
                 exit_code = 0
             elif phase == "Failed" or phase == "Error":
                 exit_code = 1
